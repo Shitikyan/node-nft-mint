@@ -1,24 +1,42 @@
-const ethers = require('ethers');
-const crypto = require('crypto');
 const express = require("express");
-const getWalletRepository = require("../orm/repository/wallet");
 const Web3 = require('web3');
+const CONFIG = require("../config");
 const abi = require('../artifacts/contracts/Factory.sol/Factory.json').abi
 
 const router = express.Router();
 
-/* GET users listing. */
 router.post('/', async (req, res, next) => {
     try {
-        const web3 = new Web3('https://eth-goerli.g.alchemy.com/v2/fhoMkdYwgRymdjo6RSWu-VDBkf0CCEtC');
-        const contractAddress = '0x807AC04E8A2B0016709BdECbae669d38Fd49Cd8B'
-        const incrementer = new web3.eth.Contract(abi, contractAddress);
-        const incrementTx = incrementer.methods.createContract();
+        const web3 = new Web3(CONFIG.web3.provider);
+        const contract = new web3.eth.Contract(abi, CONFIG.factoryContract.address);
 
-        return res.send(incrementTx.encodeABI());
+        const CONTRACT_NAME = 'test_name';
+        const CONTRACT_SYMBOL = 'test_symbol';
+        const BASE_URI = 'base_uri';
 
+        const token = req.authToken.token;
+
+        const deploymentTx = contract.methods.createContract(token, CONTRACT_NAME, CONTRACT_SYMBOL, BASE_URI);
+
+        return res.send(deploymentTx.encodeABI());
     } catch (err) {
-        res.status(404);
+        res.status(400);
+        res.send({ error: true, message: err });
+    }
+});
+
+router.get('/', async (req, res, next) => {
+    try {
+        const web3 = new Web3(CONFIG.web3.provider);
+        const contract = new web3.eth.Contract(abi, CONFIG.factoryContract.address);
+
+        const token = req.authToken.token;
+
+        let userContracts = await contract.methods.getUserContracts(token).call();
+
+        return res.send(userContracts);
+    } catch (err) {
+        res.status(400);
         res.send({ error: true, message: err });
     }
 });

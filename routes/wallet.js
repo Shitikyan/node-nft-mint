@@ -24,7 +24,7 @@ router.post('/', async (req, res, next) => {
             public_key: wallet.address
         });
     } catch (err) {
-        res.status(404);
+        res.status(400);
         res.send({ error: true, message: err });
     }
 });
@@ -41,7 +41,7 @@ router.get('/', async (req, res, next) => {
 
         return res.status(200).send(publicKeys);
     } catch (err) {
-        res.status(404);
+        res.status(400);
         res.send({ error: true, message: err });
     }
 

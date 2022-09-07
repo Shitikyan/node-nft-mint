@@ -1,13 +1,66 @@
+<!DOCTYPE html>
 <html>
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="stylesheet" type="text/css" href="styles.css" />
+  </head>
+  <body>
+    <button id="connect-button">Connect Metamask</button>
+    <br>
+    <input id="txData" type="text" placeholder="Paste post /api/contract/ result" />
+    <input id="contractAddress" type="text" placeholder="Factory contract address (0x4D37255Ec87a7d2C530f2d21950B27753941055B)" />
+    <button id="send-button">Tip 0.001 ETH</button>
+    <script src="https://cdn.jsdelivr.net/gh/ethereum/web3.js@1.0.0-beta.34/dist/web3.min.js"></script>
 
-<head>
-  <title>Express</title>
-  <link rel="stylesheet" href="/stylesheets/style.css">
-</head>
+    <script>
+      let account;
 
-<body>
-  <h1>Express</h1>
-  <p>Welcome to Express</p>
-</body>
+      document.getElementById('connect-button').addEventListener('click', event => {
+        try {
+          window.ethereum.request({
+            method: 'wallet_switchEthereumChain',
+            params: [{ chainId: '0x5' }], // chainId must be in hexadecimal numbers
+          }).then((v) => {
+            let button = event.target;
+            ethereum.request({method: 'eth_requestAccounts'}).then(accounts => {
+              account = accounts[0];
+              button.textContent = account;
+            });
+          });
+        } catch (e) {
+          console.log("Couldn't switch to Goerli network")
+        }
+      });
 
+      document.getElementById('send-button').addEventListener('click', event =>{
+        let data = document.getElementById('txData').value;
+        let contractAddress = document.getElementById('contractAddress').value;
+
+        const txParams = {
+          from: account,
+          to: contractAddress,
+          data: data,
+        }
+
+        ethereum.request({method: 'eth_sendTransaction', params:[txParams]}).then(txhash => {
+          console.log(txhash);
+          checkTransactionconfirmation(txhash).then(r => alert(r));
+        });
+      });
+
+      function checkTransactionconfirmation(txhash) {
+
+        let checkTransactionLoop = () => {
+          return ethereum.request({method:'eth_getTransactionReceipt',params:[txhash]}).then(r => {
+            if(r !=null) return 'confirmed';
+            else return checkTransactionLoop();
+          });
+        };
+
+        return checkTransactionLoop();
+      }
+
+
+    </script>  
+  </body>
 </html>
