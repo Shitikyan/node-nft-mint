@@ -18,7 +18,10 @@ router.post('/', async (req, res, next) => {
 
         const deploymentTx = contract.methods.createContract(token, CONTRACT_NAME, CONTRACT_SYMBOL, BASE_URI);
 
-        return res.send(deploymentTx.encodeABI());
+        return res.send({
+            factoryContractAddress: CONFIG.factoryContract.address,
+            contracts: deploymentTx.encodeABI(),
+        });
     } catch (err) {
         res.status(400);
         res.send({ error: true, message: err });
