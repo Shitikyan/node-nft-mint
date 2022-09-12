@@ -16,6 +16,10 @@ contract NFT is ERC721, Ownable {
         __baseURI = baseURI;
     }
 
+    function getBaseURI() public view returns(string memory){
+        return __baseURI;
+    }
+
     function safeMint(address to) public onlyOwner {
         uint256 tokenId = _tokenIdCounter.current();
         _tokenIdCounter.increment();

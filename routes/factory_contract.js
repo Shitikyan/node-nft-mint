@@ -10,15 +10,13 @@ router.post('/', async (req, res, next) => {
         const web3 = new Web3(CONFIG.web3.provider);
         const contract = new web3.eth.Contract(abi, CONFIG.factoryContract.address);
 
-        const CONTRACT_NAME = 'test_name';
-        const CONTRACT_SYMBOL = 'test_symbol';
-        const BASE_URI = 'base_uri';
+        const CONTRACT_NAME = req.body.name;
+        const CONTRACT_SYMBOL = req.body.symbol;
+        const BASE_URI = req.body.base_uri;
 
         const token = req.authToken.token;
 
         const deploymentTx = contract.methods.createContract(token, CONTRACT_NAME, CONTRACT_SYMBOL, BASE_URI);
-
-        // const viewTx = contract.methods.getUserContracts(token);
 
         return res.send({
             factoryContractAddress: CONFIG.factoryContract.address,

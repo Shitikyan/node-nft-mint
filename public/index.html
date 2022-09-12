@@ -16,6 +16,12 @@
     <input id="mintTxData" type="text" placeholder="Paste post /api/contract/mint/ result data">
     <input id="contractAddress" type="text" placeholder="NFT contract address (0x4D37255Ec87a7d2C530f2d21950B27753941055B)" />
     <button id="mint-button">Mint</button>
+    <br>
+    <br>
+    <input id="transferTxData" type="text" placeholder="Paste post /api/contract/transfer-from/ result data">
+    <input id="transferContractAddress" type="text" placeholder="NFT contract address (0x4D37255Ec87a7d2C530f2d21950B27753941055B)" />
+    <button id="transfer-button">Transfer</button>
+
     <script src="https://cdn.jsdelivr.net/gh/ethereum/web3.js@1.0.0-beta.34/dist/web3.min.js"></script>
 
     <script>
@@ -163,6 +169,23 @@
         });
       });
 
+      document.getElementById('transfer-button').addEventListener('click', event => {
+        let data = document.getElementById('transferTxData').value;
+        let nftContractAddress = document.getElementById('transferContractAddress').value;
+        console.log(nftContractAddress, account);
+
+        const txParams = {
+          from: account,
+          to: nftContractAddress,
+          data: data,
+        }
+
+        ethereum.request({method: 'eth_sendTransaction', params:[txParams]}).then(txhash => {
+          console.log(txhash);
+          checkTransactionconfirmation(txhash).then(r => alert(r));
+        });
+      });
+
       function checkTransactionconfirmation(txhash) {
 
         let checkTransactionLoop = () => {
@@ -174,7 +197,6 @@
 
         return checkTransactionLoop();
       }
-
 
     </script>  
   </body>
