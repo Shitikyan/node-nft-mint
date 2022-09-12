@@ -9,7 +9,7 @@ const CONFIG = {
     },
 
     factoryContract: {
-        address: "0xA24B0E1b210C4b5B1725A4E0f1EdD6E211Af9fa7",
+        address: "0x857776AfffEa7E899783ba1bc928aC6af158150A",
     },
 
     web3: {

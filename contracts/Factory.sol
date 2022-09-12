@@ -13,6 +13,8 @@ contract Factory {
 
     function createContract(string memory token, string memory name, string memory symbol, string memory baseURI) public returns(address) {
         NFT nft = new NFT(name, symbol, baseURI);
+        nft.transferOwnership(msg.sender);
+
         _userContracts[stringToBytes32(token)].push(address(nft));
         emit LogCreatedNFT(address(nft));
         return address(nft);

@@ -7,13 +7,110 @@
   <body>
     <button id="connect-button">Connect Metamask</button>
     <br>
-    <input id="txData" type="text" placeholder="Paste post /api/contract/ result" />
-    <input id="contractAddress" type="text" placeholder="Factory contract address (0x4D37255Ec87a7d2C530f2d21950B27753941055B)" />
-    <button id="send-button">Tip 0.001 ETH</button>
+    <input id="factoryDeployTxData" type="text" placeholder="Paste post /api/factory/ result" />
+    <input id="factoryContractAddress" type="text" placeholder="Factory contract address (0x4D37255Ec87a7d2C530f2d21950B27753941055B)" />
+    <button id="deploy-button">Deploy</button>
+    <br>
+    <button id="log-contracts-button">Log contracts</button>
+    <br>
+    <input id="mintTxData" type="text" placeholder="Paste post /api/contract/mint/ result data">
+    <input id="contractAddress" type="text" placeholder="NFT contract address (0x4D37255Ec87a7d2C530f2d21950B27753941055B)" />
+    <button id="mint-button">Mint</button>
     <script src="https://cdn.jsdelivr.net/gh/ethereum/web3.js@1.0.0-beta.34/dist/web3.min.js"></script>
 
     <script>
       let account;
+
+      document.getElementById('log-contracts-button').addEventListener('click', event => {
+        try {
+          const web3 = new Web3(new Web3.providers.HttpProvider('https://eth-goerli.g.alchemy.com/v2/fhoMkdYwgRymdjo6RSWu-VDBkf0CCEtC'));
+          const factoryContractAddr = document.getElementById('factoryContractAddress').value;
+          const data = "0xce29af780000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000000c306a323962327a68766d6c380000000000000000000000000000000000000000";
+
+          const abi = [
+            {
+              "inputs": [],
+              "stateMutability": "nonpayable",
+              "type": "constructor"
+            },
+            {
+              "anonymous": false,
+              "inputs": [
+                {
+                  "indexed": false,
+                  "internalType": "address",
+                  "name": "nft",
+                  "type": "address"
+                }
+              ],
+              "name": "LogCreatedNFT",
+              "type": "event"
+            },
+            {
+              "inputs": [
+                {
+                  "internalType": "string",
+                  "name": "token",
+                  "type": "string"
+                },
+                {
+                  "internalType": "string",
+                  "name": "name",
+                  "type": "string"
+                },
+                {
+                  "internalType": "string",
+                  "name": "symbol",
+                  "type": "string"
+                },
+                {
+                  "internalType": "string",
+                  "name": "baseURI",
+                  "type": "string"
+                }
+              ],
+              "name": "createContract",
+              "outputs": [
+                {
+                  "internalType": "address",
+                  "name": "",
+                  "type": "address"
+                }
+              ],
+              "stateMutability": "nonpayable",
+              "type": "function"
+            },
+            {
+              "inputs": [
+                {
+                  "internalType": "string",
+                  "name": "token",
+                  "type": "string"
+                }
+              ],
+              "name": "getUserContracts",
+              "outputs": [
+                {
+                  "internalType": "address[]",
+                  "name": "",
+                  "type": "address[]"
+                }
+              ],
+              "stateMutability": "view",
+              "type": "function"
+            }
+          ]
+
+          const contract = new web3.eth.Contract(abi, factoryContractAddr);
+
+          // Update to existing token
+          const token = "0j29b2zhvml8";
+
+          contract.methods.getUserContracts(token).call().then(console.log);
+        } catch (e) {
+          console.log(e)
+        }
+      });
 
       document.getElementById('connect-button').addEventListener('click', event => {
         try {
@@ -32,13 +129,31 @@
         }
       });
 
-      document.getElementById('send-button').addEventListener('click', event =>{
-        let data = document.getElementById('txData').value;
-        let contractAddress = document.getElementById('contractAddress').value;
+      document.getElementById('deploy-button').addEventListener('click', event => {
+        let data = document.getElementById('factoryDeployTxData').value;
+        let factoryContractAddress = document.getElementById('factoryContractAddress').value;
+
+        console.log(data, factoryContractAddress, account);
+        const txParams = {
+          from: account,
+          to: factoryContractAddress,
+          data: data,
+        }
+
+        ethereum.request({method: 'eth_sendTransaction', params:[txParams]}).then(txhash => {
+          console.log(txhash);
+          checkTransactionconfirmation(txhash).then(r => alert(r));
+        });
+      });
+
+      document.getElementById('mint-button').addEventListener('click', event => {
+        let data = document.getElementById('mintTxData').value;
+        let nftContractAddress = document.getElementById('contractAddress').value;
+        console.log(nftContractAddress, account);
 
         const txParams = {
           from: account,
-          to: contractAddress,
+          to: nftContractAddress,
           data: data,
         }
 
