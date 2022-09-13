@@ -5,6 +5,9 @@ const logger = require('morgan');
 
 const tokenRouter = require('./routes/token');
 const walletRouter = require('./routes/wallet');
+const factoryContractRouter = require('./routes/factory_contract');
+const contractRouter = require('./routes/contract');
+
 const tokenVerification = require('./middleware/tokenVerification');
 
 const app = express();
@@ -19,5 +22,7 @@ app.use(tokenVerification);
 
 app.use('/api/token', tokenRouter);
 app.use('/api/wallet', walletRouter);
+app.use('/api/factory', factoryContractRouter);
+app.use('/api/contract', contractRouter);
 
 module.exports = app;
