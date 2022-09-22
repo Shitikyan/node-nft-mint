@@ -3,9 +3,11 @@ const Web3 = require('web3');
 const CONFIG = require("../config");
 const abi = require('../artifacts/contracts/NFT.sol/NFT.json').abi
 
+const tokenVerification = require('./../middleware/tokenVerification');
+
 const router = express.Router();
 
-router.post('/mint/', async (req, res, next) => {
+router.post('/mint/', tokenVerification, async (req, res, next) => {
     try {
         const web3 = new Web3(CONFIG.web3.provider);
         const contract = new web3.eth.Contract(abi);
@@ -23,7 +25,7 @@ router.post('/mint/', async (req, res, next) => {
     }
 });
 
-router.post('/transfer-from/', async (req, res, next) => {
+router.post('/transfer-from/', tokenVerification, async (req, res, next) => {
     try {
         const addressFrom = req.body.address_from;
         const addressTo = req.body.address_to;
@@ -43,7 +45,7 @@ router.post('/transfer-from/', async (req, res, next) => {
     }
 });
 
-router.get('/:contractAddress/token/:tokenId', async (req, res, next) => {
+router.get('/:contractAddress/token/:tokenId', tokenVerification, async (req, res, next) => {
     try {
         const contractAddress = req.params.contractAddress;
         const tokenId = req.params.tokenId;
