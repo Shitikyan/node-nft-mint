@@ -1,4 +1,3 @@
-const getConnection = require('../');
 const AppDataSource = require("../config/dataSource");
 
 
