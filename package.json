@@ -4,7 +4,8 @@
   "private": true,
   "scripts": {
     "typeorm": "typeorm-ts-node-commonjs",
-    "start": "node ./bin/www"
+    "start": "node ./bin/www",
+    "docker-compose:up": "docker-compose up"
   },
   "dependencies": {
     "@nomicfoundation/hardhat-toolbox": "^1.0.2",

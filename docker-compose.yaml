@@ -6,7 +6,7 @@ services:
     ports:
       - 33061:3306
     volumes:
-      - ~/apps/mysql:/var/lib/mysql
+      - ~/apps/mysql:/var/lib/mysqll
     environment:
       - MYSQL_ROOT_PASSWORD=root
       - MYSQL_PASSWORD=user
