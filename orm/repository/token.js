@@ -1,9 +1,9 @@
-const getConnection = require('../');
+const AppDataSource = require("../config/dataSource");
 
 
 const getTokenRepository = async () => {
     if (this.tokenRepository) return this.tokenRepository;
-    this.tokenRepository = (await getConnection()).getRepository("Token");
+    this.tokenRepository = AppDataSource.getRepository("Token");
     return this.tokenRepository;
 }
 
