@@ -22,7 +22,6 @@ const AppDataSource = new DataSource({
 
 AppDataSource.initialize()
   .then(async () => {
-    console.log("Data Source has been initialized!")
     await AppDataSource.runMigrations();
   })
   .catch((err) => {
