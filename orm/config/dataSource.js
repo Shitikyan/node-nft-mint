@@ -10,7 +10,8 @@ const AppDataSource = new DataSource({
   username: CONFIG.db.username,
   password: CONFIG.db.password,
   database: CONFIG.db.database,
-  synchronize: true,
+  synchronize: false,
+  migrationsRun: true,
   logging: false,
   entities: [
     tokenSchema,
@@ -21,11 +22,10 @@ const AppDataSource = new DataSource({
 });
 
 AppDataSource.initialize()
-  .then(async () => {
-    await AppDataSource.runMigrations();
-  })
   .catch((err) => {
     console.error("Error during Data Source initialization", err)
   })
 
-module.exports = AppDataSource;
+module.exports = {
+  default: AppDataSource
+};

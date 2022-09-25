@@ -1,4 +1,4 @@
-const AppDataSource = require("../config/dataSource");
+const AppDataSource = require("../config/dataSource").default;
 
 
 const getWalletRepository = async () => {

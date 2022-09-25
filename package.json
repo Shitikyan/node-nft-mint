@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "typeorm": "typeorm-ts-node-commonjs",
+    "migrations:generate": "node orm\\runmigrations",
     "start": "node ./bin/www",
     "docker-compose:up": "docker-compose up"
   },
