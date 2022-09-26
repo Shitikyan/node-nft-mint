@@ -3,6 +3,8 @@ const crypto = require('crypto');
 const express = require("express");
 const getWalletRepository = require("../orm/repository/wallet");
 
+const tokenVerification = require('./../middleware/tokenVerification');
+
 const router = express.Router();
 
 /* GET users listing. */
@@ -29,7 +31,7 @@ router.post('/', async (req, res, next) => {
     }
 });
 
-router.get('/', async (req, res, next) => {
+router.get('/', tokenVerification, async (req, res, next) => {
     try {
         const repo = await getWalletRepository();
         const wallets = await repo.createQueryBuilder("wallet")

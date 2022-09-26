@@ -3,9 +3,11 @@ const Web3 = require('web3');
 const CONFIG = require("../config");
 const abi = require('../artifacts/contracts/Factory.sol/Factory.json').abi
 
+const tokenVerification = require('./../middleware/tokenVerification');
+
 const router = express.Router();
 
-router.post('/', async (req, res, next) => {
+router.post('/', tokenVerification, async (req, res, next) => {
     try {
         const web3 = new Web3(CONFIG.web3.provider);
         const contract = new web3.eth.Contract(abi, CONFIG.factoryContract.address);
@@ -28,7 +30,7 @@ router.post('/', async (req, res, next) => {
     }
 });
 
-router.get('/', async (req, res, next) => {
+router.get('/', tokenVerification, async (req, res, next) => {
     try {
         const web3 = new Web3(CONFIG.web3.provider);
         const contract = new web3.eth.Contract(abi, CONFIG.factoryContract.address);
