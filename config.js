@@ -2,14 +2,14 @@ const CONFIG = {
     db: {
         type: "mysql",
         host: "localhost",
-        port: 3306,
+        port: 33061,
         username: "root",
         password: "root",
         database: "pnsb",
     },
 
     factoryContract: {
-        address: "0x857776AfffEa7E899783ba1bc928aC6af158150A",
+        address: "0x319318BAA4B8588d225168D4a6C14eE9619b25d6",
     },
 
     web3: {

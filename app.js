@@ -17,6 +17,7 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/api/token', tokenRouter);
+
 app.use('/api/wallet', walletRouter);
 app.use('/api/factory', factoryContractRouter);
 app.use('/api/contract', contractRouter);
