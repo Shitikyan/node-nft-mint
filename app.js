@@ -8,8 +8,6 @@ const walletRouter = require('./routes/wallet');
 const factoryContractRouter = require('./routes/factory_contract');
 const contractRouter = require('./routes/contract');
 
-const tokenVerification = require('./middleware/tokenVerification');
-
 const app = express();
 
 app.use(logger('dev'));
@@ -19,8 +17,6 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/api/token', tokenRouter);
-
-app.use(tokenVerification);
 
 app.use('/api/wallet', walletRouter);
 app.use('/api/factory', factoryContractRouter);
