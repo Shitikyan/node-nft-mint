@@ -2,7 +2,7 @@ const CONFIG = {
     db: {
         type: "mysql",
         host: "localhost",
-        port: 33061,
+        port: 3306,
         username: "root",
         password: "root",
         database: "pnsb",

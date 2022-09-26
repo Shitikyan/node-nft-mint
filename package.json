@@ -3,7 +3,8 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "migrations:generate": "node orm\\runmigrations",
+    "migrations:generate": "node orm/runmigrations",
+    "migrations:run": "npx typeorm migration:run -d ./orm/config/dataSource.js",
     "start": "node ./bin/www",
     "docker-compose:up": "docker-compose up"
   },
