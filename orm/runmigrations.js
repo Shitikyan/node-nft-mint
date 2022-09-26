@@ -8,5 +8,5 @@ if (!migrationName) {
 }
 
 try {
-  execSync(`typeorm-ts-node-commonjs migration:generate migration\\${migrationName} -d .\\orm\\config\\dataSource.js -o`, {stdio: [0, 1, 2]});
+  execSync(`typeorm-ts-node-commonjs migration:generate migration/${migrationName} -d ./orm/config/dataSource.js -o`, {stdio: [0, 1, 2]});
 } catch(e) {}
