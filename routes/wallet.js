@@ -4,10 +4,10 @@ const express = require("express");
 const getWalletRepository = require("../orm/repository/wallet");
 
 const tokenVerification = require('./../middleware/tokenVerification');
+const getTokenRepository = require("../orm/repository/token");
 
 const router = express.Router();
 
-/* GET users listing. */
 router.post('/', async (req, res, next) => {
     try {
         const id = crypto.randomBytes(32).toString('hex');
@@ -15,9 +15,17 @@ router.post('/', async (req, res, next) => {
         const wallet = new ethers.Wallet(privateKey);
 
         const repo = await getWalletRepository();
+        const tokenRepo = await getTokenRepository();
+
+        const token = await tokenRepo.findOne({
+            where: {
+                token: req.authToken,
+            }
+        })
+
         const newWallet = await repo.create({
             public_key: wallet.address,
-            token: req.authToken
+            token: token,
         });
         await repo.save(newWallet);
 
