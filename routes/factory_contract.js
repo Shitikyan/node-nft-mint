@@ -7,6 +7,7 @@ const tokenVerification = require('./../middleware/tokenVerification');
 
 const router = express.Router();
 
+// TODO changed
 router.post('/', tokenVerification, async (req, res, next) => {
     try {
         const web3 = new Web3(CONFIG.web3.provider);
@@ -14,11 +15,10 @@ router.post('/', tokenVerification, async (req, res, next) => {
 
         const CONTRACT_NAME = req.body.name;
         const CONTRACT_SYMBOL = req.body.symbol;
-        const BASE_URI = req.body.base_uri;
 
         const token = req.authToken.token;
 
-        const deploymentTx = contract.methods.createContract(token, CONTRACT_NAME, CONTRACT_SYMBOL, BASE_URI);
+        const deploymentTx = contract.methods.createContract(token, CONTRACT_NAME, CONTRACT_SYMBOL);
 
         return res.send({
             factoryContractAddress: CONFIG.factoryContract.address,

@@ -21,10 +21,19 @@ The endpoints are structures like this:
   - GET `/api/token/` - Generates and saves a new random token and returns it.
 - `/api/factory/`
   - POST `/api/factory/` - Returns encoded data of `createContract` method of the deployed Factory contract. The request body looks like this 
-    `{ name: "test", symbol: "symbol", base_uri:"test.com" }`.
+    `{ name: "test", symbol: "symbol" }`.
   - GET `/api/factory` - Returns the contracts deployed by user.
 - `/api/contract/`
-  - POST `/api/contract/mint` - Returns encoded data of mint method of the NFT contract. The request body looks like this: `{ to: "0x5B38Da6a701c568545dCfcB03FcB875f56beddC4" }`
+  - POST `/api/contract/mint` - Returns encoded data of mint method of the NFT contract. The request body looks like this: 
+  ```
+  {
+    "tokenId": 1,
+    "to": "0xc315240Ac71b351BB1f2E2E60017D3aC8F02D304",
+    "uri": "test.com",
+    "nftAddress": "0xc315240Ac71b351BB1f2E2E60017D3aC8F02D304",
+    "data": "testData"
+    }
+  ```
   - POST `/api/contract/transfer-from` - Returns encoded data of transferFrom method of the NFT contract. The request body looks like this: `{ "address_from": "0xc315240Ac71b351BB1f2E2E60017D3aC8F02D304", "address_to": "0x5B38Da6a701c568545dCfcB03FcB875f56beddC4", "token_id": "0" }`.
   - GET `/api/contract/:contractAddress/token/:tokenId` - Returns info about token with id `tokenId` on contract with address `contractAddress`.
 
