@@ -7,7 +7,6 @@ const tokenVerification = require('./../middleware/tokenVerification');
 
 const router = express.Router();
 
-// TODO changed
 router.post('/', tokenVerification, async (req, res, next) => {
     try {
         const web3 = new Web3(CONFIG.web3.provider);
