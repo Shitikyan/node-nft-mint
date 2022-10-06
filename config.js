@@ -9,7 +9,11 @@ const CONFIG = {
     },
 
     factoryContract: {
-        address: "0x319318BAA4B8588d225168D4a6C14eE9619b25d6",
+        address: "0x60a0B328BB97f7241313A3cAcB7Ad439670DF2dB",
+    },
+
+    nftContract: {
+        address: "0x2b42d2feA789b2888A4D8fA5cfc4E8D4392AbcA3",
     },
 
     web3: {

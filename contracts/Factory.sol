@@ -11,8 +11,8 @@ contract Factory {
 
     constructor() { }
 
-    function createContract(string memory token, string memory name, string memory symbol, string memory baseURI) public returns(address) {
-        NFT nft = new NFT(name, symbol, baseURI);
+    function createContract(string memory token, string memory name, string memory symbol) public returns(address) {
+        NFT nft = new NFT(name, symbol);
 
         _userContracts[stringToBytes32(token)].push(address(nft));
         emit LogCreatedNFT(address(nft));
@@ -23,7 +23,7 @@ contract Factory {
         return _userContracts[stringToBytes32(token)];
     }
 
-    function stringToBytes32(string memory source) internal view returns (bytes32 result) {
+    function stringToBytes32(string memory source) internal pure returns (bytes32 result) {
         bytes memory tempEmptyStringTest = bytes(source);
         if (tempEmptyStringTest.length == 0) {
             return 0x0;

@@ -12,9 +12,13 @@ router.post('/mint/', tokenVerification, async (req, res, next) => {
         const web3 = new Web3(CONFIG.web3.provider);
         const contract = new web3.eth.Contract(abi);
 
+        const tokenId = req.body.tokenId;
         const to = req.body.to;
+        const uri = req.body.uri;
+        const nftAddress = req.body.nftAddress;
+        const data = req.body.data;
 
-        const mintTx = contract.methods.safeMint(to);
+        const mintTx = contract.methods.safeMint(tokenId, to, uri, nftAddress, data);
 
         return res.send({
             data: mintTx.encodeABI(),
@@ -54,18 +58,16 @@ router.get('/:contractAddress/token/:tokenId', tokenVerification, async (req, re
         const contract = new web3.eth.Contract(abi, contractAddress);
 
         const ownerAddress = await contract.methods.ownerOf(tokenId).call();
-        const baseURI = await contract.methods.getBaseURI().call();
-
-        let uri;
-        if (baseURI[baseURI.length - 1] === '/')
-            uri = baseURI + tokenId;
-        else
-            uri = baseURI + '/' + tokenId;
+        const uri = await contract.methods.tokenURI(tokenId).call();
+        const data = await contract.methods.tokenData(tokenId).call();
+        const address = await contract.methods.tokenAddress(tokenId).call();
 
         res.send({
             'token-id': tokenId,
             uri,
             owner: ownerAddress,
+            data,
+            address,
         })
     } catch (err) {
         res.status(400);
