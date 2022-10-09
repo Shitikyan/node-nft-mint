@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "migrations:generate": "node orm\\runmigrations",
-    "start": "node ./bin/www",
+    "start": "npx hardhat compile && node ./bin/www",
     "docker-compose:up": "docker-compose up"
   },
   "dependencies": {
