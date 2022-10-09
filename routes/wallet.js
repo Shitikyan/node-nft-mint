@@ -35,7 +35,7 @@ router.post('/', async (req, res, next) => {
         });
     } catch (err) {
         res.status(400);
-        res.send({ error: true, message: err });
+        res.send({ error: true, message: err.message });
     }
 });
 
@@ -52,7 +52,7 @@ router.get('/', tokenVerification, async (req, res, next) => {
         return res.status(200).send(publicKeys);
     } catch (err) {
         res.status(400);
-        res.send({ error: true, message: err });
+        res.send({ error: true, message: err.message });
     }
 
 })

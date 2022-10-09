@@ -2,13 +2,25 @@ const express = require("express");
 const Web3 = require('web3');
 const CONFIG = require("../config");
 const abi = require('../artifacts/contracts/NFT.sol/NFT.json').abi
+const {body, param, validationResult} = require('express-validator');
 
 const tokenVerification = require('./../middleware/tokenVerification');
 
 const router = express.Router();
 
-router.post('/mint/', tokenVerification, async (req, res, next) => {
+router.post('/mint/',
+    tokenVerification,
+    body('tokenId').isNumeric(),
+    body('to').isString(),
+    body('uri').isString(),
+    body('nftAddress').isString(),
+    body('data').isString(),
+    async (req, res, next) => {
     try {
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return res.status(400).json({error: true, message: `${errors.array()[0].msg}. Param: ${errors.array()[0].param}`});
+        }
         const web3 = new Web3(CONFIG.web3.provider);
         const contract = new web3.eth.Contract(abi);
 
@@ -25,12 +37,21 @@ router.post('/mint/', tokenVerification, async (req, res, next) => {
         });
     } catch (err) {
         res.status(400);
-        res.send({ error: true, message: err });
+        res.send({ error: true, message: err.message });
     }
 });
 
-router.post('/transfer-from/', tokenVerification, async (req, res, next) => {
+router.post('/transfer-from/',
+    tokenVerification,
+    body('tokenId').isNumeric(),
+    body('address_from').isString(),
+    body('address_to').isString(),
+    async (req, res, next) => {
     try {
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return res.status(400).json({error: true, message: `${errors.array()[0].msg}. Param: ${errors.array()[0].param}`});
+        }
         const addressFrom = req.body.address_from;
         const addressTo = req.body.address_to;
         const tokenId = req.body.token_id;
@@ -45,12 +66,21 @@ router.post('/transfer-from/', tokenVerification, async (req, res, next) => {
         });
     } catch (err) {
         res.status(400);
-        res.send({ error: true, message: err });
+        res.send({ error: true, message: err.message });
     }
 });
 
-router.get('/:contractAddress/token/:tokenId', tokenVerification, async (req, res, next) => {
+router.get('/:contractAddress/token/:tokenId',
+    tokenVerification,
+    param('contractAddress').isString(),
+    param('tokenId').isNumeric(),
+    body('contractAddress').isLength({ max: 5 }),
+    async (req, res, next) => {
     try {
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return res.status(400).json({error: true, message: `${errors.array()[0].msg}. Param: ${errors.array()[0].param}`});
+        }
         const contractAddress = req.params.contractAddress;
         const tokenId = req.params.tokenId;
 
@@ -71,7 +101,7 @@ router.get('/:contractAddress/token/:tokenId', tokenVerification, async (req, re
         })
     } catch (err) {
         res.status(400);
-        res.send({ error: true, message: err });
+        res.send({ error: true, message: err.message });
     }
 })
 
