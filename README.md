@@ -34,7 +34,7 @@ The endpoints are structures like this:
     "data": "testData"
     }
   ```
-  - POST `/api/contract/transfer-from` - Returns encoded data of transferFrom method of the NFT contract. The request body looks like this: `{ "address_from": "0xc315240Ac71b351BB1f2E2E60017D3aC8F02D304", "address_to": "0x5B38Da6a701c568545dCfcB03FcB875f56beddC4", "token_id": "0" }`.
+  - POST `/api/contract/transfer-from` - Returns encoded data of transferFrom method of the NFT contract. The request body looks like this: `{ "addressFrom": "0xc315240Ac71b351BB1f2E2E60017D3aC8F02D304", "addressTo": "0x5B38Da6a701c568545dCfcB03FcB875f56beddC4", "tokenId": "0" }`.
   - GET `/api/contract/:contractAddress/token/:tokenId` - Returns info about token with id `tokenId` on contract with address `contractAddress`.
 
 ## Migrations:

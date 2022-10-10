@@ -44,17 +44,17 @@ router.post('/mint/',
 router.post('/transfer-from/',
     tokenVerification,
     body('tokenId').isNumeric(),
-    body('address_from').isString(),
-    body('address_to').isString(),
+    body('addressFrom').isString(),
+    body('addressTo').isString(),
     async (req, res, next) => {
     try {
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
             return res.status(400).json({error: true, message: `${errors.array()[0].msg}. Param: ${errors.array()[0].param}`});
         }
-        const addressFrom = req.body.address_from;
-        const addressTo = req.body.address_to;
-        const tokenId = req.body.token_id;
+        const addressFrom = req.body.addressFrom;
+        const addressTo = req.body.addressTo;
+        const tokenId = req.body.tokenId;
 
         const web3 = new Web3(CONFIG.web3.provider);
         const contract = new web3.eth.Contract(abi);
