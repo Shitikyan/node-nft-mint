@@ -129,6 +129,11 @@
             ethereum.request({method: 'eth_requestAccounts'}).then(accounts => {
               account = accounts[0];
               button.textContent = account;
+              window.ethereum.getBalance(account).then(
+                res => {
+                  console.log(res)
+                }
+              );
             });
           });
         } catch (e) {

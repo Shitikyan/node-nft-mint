@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <link rel="stylesheet" type="text/css" href="styles.css" />
+</head>
+<body>
+<button id="connect-button">Connect Metamask</button>
+<br>
+<input id="setVal" type="text" placeholder="Paste post /api/datavault/ result" />
+<input id="datavaultContractAddress" type="text" placeholder="Datavault contract address (0x4D37255Ec87a7d2C530f2d21950B27753941055B)" />
+<button id="set-val-button">Set</button>
+<br>
+<input id="deleteVal" type="text" placeholder="Paste delete /api/datavault/ result data">
+<input id="contractAddress" type="text" placeholder="Datavault contract address (0x4D37255Ec87a7d2C530f2d21950B27753941055B)" />
+<button id="delete-val-button">Delete value of</button>
+<br>
+
+<script src="https://cdn.jsdelivr.net/gh/ethereum/web3.js@1.0.0-beta.34/dist/web3.min.js"></script>
+
+<script>
+  let account;
+
+  document.getElementById('connect-button').addEventListener('click', event => {
+    try {
+      window.ethereum.request({
+        method: 'wallet_switchEthereumChain',
+        params: [{ chainId: '0x5' }], // chainId must be in hexadecimal numbers
+      }).then((v) => {
+        let button = event.target;
+        ethereum.request({method: 'eth_requestAccounts'}).then(accounts => {
+          account = accounts[0];
+          button.textContent = account;
+          window.ethereum.getBalance(account).then(
+                  res => {
+                    console.log(res)
+                  }
+          );
+        });
+      });
+    } catch (e) {
+      console.log("Couldn't switch to Goerli network")
+    }
+  });
+
+  document.getElementById('set-val-button').addEventListener('click', event => {
+    let data = document.getElementById('setVal').value;
+    let datavaultContractAddress = document.getElementById('datavaultContractAddress').value;
+
+    console.log(data, datavaultContractAddress, account);
+    const txParams = {
+      from: account,
+      to: datavaultContractAddress,
+      data: data,
+    }
+
+    ethereum.request({method: 'eth_sendTransaction', params:[txParams]}).then(txhash => {
+      console.log(txhash);
+      checkTransactionconfirmation(txhash).then(r => alert(r));
+    });
+  });
+
+  document.getElementById('delete-val-button').addEventListener('click', event => {
+    let data = document.getElementById('deleteVal').value;
+    let datavaultContractAddress = document.getElementById('contractAddress').value;
+    console.log(datavaultContractAddress, account);
+
+    const txParams = {
+      from: account,
+      to: datavaultContractAddress,
+      data: data,
+    }
+
+    ethereum.request({method: 'eth_sendTransaction', params:[txParams]}).then(txhash => {
+      console.log(txhash);
+      checkTransactionconfirmation(txhash).then(r => alert(r));
+    });
+  });
+
+  function checkTransactionconfirmation(txhash) {
+
+    let checkTransactionLoop = () => {
+      return ethereum.request({method:'eth_getTransactionReceipt',params:[txhash]}).then(r => {
+        if(r !=null) return 'confirmed';
+        else return checkTransactionLoop();
+      });
+    };
+
+    return checkTransactionLoop();
+  }
+
+</script>
+</body>
+</html>

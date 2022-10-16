@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <link rel="stylesheet" type="text/css" href="styles.css" />
+</head>
+<body>
+<button id="connect-button">Connect Metamask</button>
+<br>
+<input id="factoryDeployTxData" type="text" placeholder="Paste post /api/erc20/factory/ result" />
+<input id="factoryContractAddress" type="text" placeholder="Factory contract address (0x4D37255Ec87a7d2C530f2d21950B27753941055B)" />
+<button id="deploy-button">Deploy</button>
+<br>
+<input id="logContractsFactoryContractAddress" type="text" placeholder="Factory contract address (0x4D37255Ec87a7d2C530f2d21950B27753941055B)" />
+<input id="logContractsToken" type="text" placeholder="Token">
+<button id="log-contracts-button">Log contracts</button>
+<br>
+<input id="mintTxData" type="text" placeholder="Paste post /api/erc20/contract/mint/ result data">
+<input id="contractAddress" type="text" placeholder="ERC20 contract address (0x4D37255Ec87a7d2C530f2d21950B27753941055B)" />
+<button id="mint-button">Mint</button>
+<br>
+<br>
+<input id="transferTxData" type="text" placeholder="Paste post /api/erc20/contract/transfer-from/ result data">
+<input id="transferContractAddress" type="text" placeholder="ERC20 contract address (0x4D37255Ec87a7d2C530f2d21950B27753941055B)" />
+<button id="transfer-button">Transfer</button>
+
+<script src="https://cdn.jsdelivr.net/gh/ethereum/web3.js@1.0.0-beta.34/dist/web3.min.js"></script>
+
+<script>
+  let account;
+
+  document.getElementById('log-contracts-button').addEventListener('click', event => {
+    try {
+      const web3 = new Web3(new Web3.providers.HttpProvider('https://eth-goerli.g.alchemy.com/v2/fhoMkdYwgRymdjo6RSWu-VDBkf0CCEtC'));
+      const factoryContractAddr = document.getElementById('logContractsFactoryContractAddress').value;
+
+      const abi = [
+        {
+          "inputs": [],
+          "stateMutability": "nonpayable",
+          "type": "constructor"
+        },
+        {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "internalType": "address",
+              "name": "nft",
+              "type": "address"
+            }
+          ],
+          "name": "LogCreatedNFT",
+          "type": "event"
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "string",
+              "name": "token",
+              "type": "string"
+            },
+            {
+              "internalType": "string",
+              "name": "name",
+              "type": "string"
+            },
+            {
+              "internalType": "string",
+              "name": "symbol",
+              "type": "string"
+            },
+            {
+              "internalType": "string",
+              "name": "baseURI",
+              "type": "string"
+            }
+          ],
+          "name": "createContract",
+          "outputs": [
+            {
+              "internalType": "address",
+              "name": "",
+              "type": "address"
+            }
+          ],
+          "stateMutability": "nonpayable",
+          "type": "function"
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "string",
+              "name": "token",
+              "type": "string"
+            }
+          ],
+          "name": "getUserContracts",
+          "outputs": [
+            {
+              "internalType": "address[]",
+              "name": "",
+              "type": "address[]"
+            }
+          ],
+          "stateMutability": "view",
+          "type": "function"
+        }
+      ]
+
+      const contract = new web3.eth.Contract(abi, factoryContractAddr);
+
+      // Update to existing token
+      const token = document.getElementById('logContractsToken').value;
+
+      contract.methods.getUserContracts(token).call().then(console.log);
+    } catch (e) {
+      console.log(e)
+    }
+  });
+
+  document.getElementById('connect-button').addEventListener('click', event => {
+    try {
+      window.ethereum.request({
+        method: 'wallet_switchEthereumChain',
+        params: [{ chainId: '0x5' }], // chainId must be in hexadecimal numbers
+      }).then((v) => {
+        let button = event.target;
+        ethereum.request({method: 'eth_requestAccounts'}).then(accounts => {
+          account = accounts[0];
+          button.textContent = account;
+          window.ethereum.getBalance(account).then(
+                  res => {
+                    console.log(res)
+                  }
+          );
+        });
+      });
+    } catch (e) {
+      console.log("Couldn't switch to Goerli network")
+    }
+  });
+
+  document.getElementById('deploy-button').addEventListener('click', event => {
+    let data = document.getElementById('factoryDeployTxData').value;
+    let factoryContractAddress = document.getElementById('factoryContractAddress').value;
+
+    console.log(data, factoryContractAddress, account);
+    const txParams = {
+      from: account,
+      to: factoryContractAddress,
+      data: data,
+    }
+
+    ethereum.request({method: 'eth_sendTransaction', params:[txParams]}).then(txhash => {
+      console.log(txhash);
+      checkTransactionconfirmation(txhash).then(r => alert(r));
+    });
+  });
+
+  document.getElementById('mint-button').addEventListener('click', event => {
+    let data = document.getElementById('mintTxData').value;
+    let nftContractAddress = document.getElementById('contractAddress').value;
+    console.log(nftContractAddress, account);
+
+    const txParams = {
+      from: account,
+      to: nftContractAddress,
+      data: data,
+    }
+
+    ethereum.request({method: 'eth_sendTransaction', params:[txParams]}).then(txhash => {
+      console.log(txhash);
+      checkTransactionconfirmation(txhash).then(r => alert(r));
+    });
+  });
+
+  document.getElementById('transfer-button').addEventListener('click', event => {
+    let data = document.getElementById('transferTxData').value;
+    let nftContractAddress = document.getElementById('transferContractAddress').value;
+    console.log(nftContractAddress, account);
+
+    const txParams = {
+      from: account,
+      to: nftContractAddress,
+      data: data,
+    }
+
+    ethereum.request({method: 'eth_sendTransaction', params:[txParams]}).then(txhash => {
+      console.log(txhash);
+      checkTransactionconfirmation(txhash).then(r => alert(r));
+    });
+  });
+
+  function checkTransactionconfirmation(txhash) {
+
+    let checkTransactionLoop = () => {
+      return ethereum.request({method:'eth_getTransactionReceipt',params:[txhash]}).then(r => {
+        if(r !=null) return 'confirmed';
+        else return checkTransactionLoop();
+      });
+    };
+
+    return checkTransactionLoop();
+  }
+
+</script>
+</body>
+</html>
