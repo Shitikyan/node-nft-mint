@@ -129,11 +129,6 @@
         ethereum.request({method: 'eth_requestAccounts'}).then(accounts => {
           account = accounts[0];
           button.textContent = account;
-          window.ethereum.getBalance(account).then(
-                  res => {
-                    console.log(res)
-                  }
-          );
         });
       });
     } catch (e) {
@@ -196,7 +191,7 @@
 
     let checkTransactionLoop = () => {
       return ethereum.request({method:'eth_getTransactionReceipt',params:[txhash]}).then(r => {
-        if(r !=null) return 'confirmed';
+        if(r) return 'confirmed';
         else return checkTransactionLoop();
       });
     };

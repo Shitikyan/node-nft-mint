@@ -1,10 +1,10 @@
 const express = require("express");
 const Web3 = require('web3');
 const CONFIG = require("../config");
-const abi = require('../artifacts/contracts/DataVault.sol/DataVault.json').abi
 const {body, param, validationResult} = require('express-validator');
 
 const tokenVerification = require('./../middleware/tokenVerification');
+const getContract = require("../helpers/contract");
 
 const router = express.Router();
 
@@ -18,8 +18,8 @@ router.post('/',
             if (!errors.isEmpty()) {
                 return res.status(400).json({error: true, message: `${errors.array()[0].msg}. Param: ${errors.array()[0].param}`});
             }
-            const web3 = new Web3(CONFIG.web3.provider);
-            const contract = new web3.eth.Contract(abi);
+
+            const contract = getContract()
 
             const key = req.body.key;
             const value = req.body.value;
@@ -46,8 +46,7 @@ router.get('/',
             }
             const key = req.body.key;
 
-            const web3 = new Web3(CONFIG.web3.provider);
-            const contract = new web3.eth.Contract(abi, CONFIG.datavaultContract.address);
+            const contract = getContract()
 
             const value = await contract.methods.getVal(key).call();
 
@@ -72,8 +71,7 @@ router.delete('/',
             }
             const key = req.body.key;
 
-            const web3 = new Web3(CONFIG.web3.provider);
-            const contract = new web3.eth.Contract(abi);
+            const contract = getContract()
 
             const tx = contract.methods.deleteVal(key);
 
