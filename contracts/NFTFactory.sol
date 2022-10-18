@@ -3,7 +3,7 @@ pragma solidity ^0.8.4;
 
 import "./NFT.sol";
 
-contract Factory {
+contract NFTFactory {
 
     event LogCreatedNFT(address nft);
 

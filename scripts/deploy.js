@@ -1,17 +1,13 @@
 const {ethers} = require("hardhat");
 
 async function main() {
-  const Factory = await ethers.getContractFactory("Factory");
-  const factory = await Factory.deploy();
 
-  const NFT = await ethers.getContractFactory("NFT");
-  const nft = await NFT.deploy("Test", "TST");
+  const DataVault = await ethers.getContractFactory("DataVault");
+  const dataVault = await DataVault.deploy();
 
-  await nft.deployed();
-  await factory.deployed();
+  await dataVault.deployed();
 
-  console.log("Factory deployed to:", factory.address);
-  console.log("NFT deployed to:", nft.address);
+  console.log("DataVault deployed to:", dataVault.address);
 }
 
 main().catch((error) => {

@@ -1,7 +1,7 @@
 const express = require("express");
 const Web3 = require('web3');
 const CONFIG = require("../config");
-const abi = require('../artifacts/contracts/Factory.sol/Factory.json').abi
+const abi = require('../artifacts/contracts/NFTFactory.sol/NFTFactory.json').abi
 const {body, validationResult} = require('express-validator');
 
 const tokenVerification = require('./../middleware/tokenVerification');
@@ -20,7 +20,7 @@ router.post('/',
             }
 
             const web3 = new Web3(CONFIG.web3.provider);
-            const contract = new web3.eth.Contract(abi, CONFIG.factoryContract.address);
+            const contract = new web3.eth.Contract(abi, CONFIG.nftFactoryContract.address);
 
             const CONTRACT_NAME = req.body.name;
             const CONTRACT_SYMBOL = req.body.symbol;
@@ -30,8 +30,8 @@ router.post('/',
             const deploymentTx = contract.methods.createContract(token, CONTRACT_NAME, CONTRACT_SYMBOL);
 
             return res.send({
-                factoryContractAddress: CONFIG.factoryContract.address,
-                contracts: deploymentTx.encodeABI(),
+                factoryContractAddress: CONFIG.nftFactoryContract.address,
+                data: deploymentTx.encodeABI(),
             });
         } catch (err) {
             res.status(400).json({error: true, message: err.message});
@@ -41,7 +41,7 @@ router.post('/',
 router.get('/', tokenVerification, async (req, res, next) => {
     try {
         const web3 = new Web3(CONFIG.web3.provider);
-        const contract = new web3.eth.Contract(abi, CONFIG.factoryContract.address);
+        const contract = new web3.eth.Contract(abi, CONFIG.nftFactoryContract.address);
 
         const token = req.authToken.token;
 

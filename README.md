@@ -19,12 +19,12 @@ The endpoints are structures like this:
   - GET `/api/wallet/` - Returns wallets of the user by the token provided.
 - `/api/token/`
   - GET `/api/token/` - Generates and saves a new random token and returns it.
-- `/api/factory/`
-  - POST `/api/factory/` - Returns encoded data of `createContract` method of the deployed Factory contract. The request body looks like this 
+- `/api/nft/factory/`
+  - POST `/api/nft/factory/` - Returns encoded data of `createContract` method of the deployed Factory contract. The request body looks like this 
     `{ name: "test", symbol: "symbol" }`.
-  - GET `/api/factory` - Returns the contracts deployed by user.
-- `/api/contract/`
-  - POST `/api/contract/mint` - Returns encoded data of mint method of the NFT contract. The request body looks like this: 
+  - GET `/api/nft/factory` - Returns the contracts deployed by user.
+- `/api/nft/contract/`
+  - POST `/api/nft/contract/mint` - Returns encoded data of mint method of the NFT contract. The request body looks like this: 
   ```
   {
     "tokenId": 1,
@@ -34,8 +34,34 @@ The endpoints are structures like this:
     "data": "testData"
     }
   ```
-  - POST `/api/contract/transfer-from` - Returns encoded data of transferFrom method of the NFT contract. The request body looks like this: `{ "addressFrom": "0xc315240Ac71b351BB1f2E2E60017D3aC8F02D304", "addressTo": "0x5B38Da6a701c568545dCfcB03FcB875f56beddC4", "tokenId": "0" }`.
-  - GET `/api/contract/:contractAddress/token/:tokenId` - Returns info about token with id `tokenId` on contract with address `contractAddress`.
+  - POST `/api/nft/contract/transfer-from` - Returns encoded data of transferFrom method of the NFT contract. The request body looks like this: `{ "addressFrom": "0xc315240Ac71b351BB1f2E2E60017D3aC8F02D304", "addressTo": "0x5B38Da6a701c568545dCfcB03FcB875f56beddC4", "tokenId": "0" }`.
+  - GET `/api/nft/contract/:contractAddress/token/:tokenId` - Returns info about token with id `tokenId` on contract with address `contractAddress`.
+
+
+# API Endpoint for ERC20Factory and ERC20Token Smart Contracts
+
+The post endpoints generate encoded transaction data. This data should be put into
+transaction params and the transaction should be sent from frontend. The `public/erc20.html`
+file provides a simple frontend which may utilize this backend.
+
+The requests, for which authentication is necessary should have `auth-token` header with the request.
+
+The endpoints are structures like this:
+- `/api/erc20/factory/`
+    - POST `/api/nft/factory/` - Returns encoded data of `createContract` method of the deployed Factory contract. The request body looks like this
+      `{ name: "test", symbol: "symbol", "decimals": 18, "max_supply": 100000000" }`.
+    - GET `/api/nft/factory` - Returns the contracts deployed by user.
+- `/api/erc20/contract/`
+    - POST `/api/erc20/contract/mint` - Returns encoded data of mint method of the NFT contract. The request body looks like this:
+  ```
+  {
+    "to": "0xc315240Ac71b351BB1f2E2E60017D3aC8F02D304",
+    "amount": 1000
+    }
+  ```
+    - POST `/api/erc20/contract/transfer-from` - Returns encoded data of transferFrom method of the NFT contract. The request body looks like this: `{ "addressFrom": "0xc315240Ac71b351BB1f2E2E60017D3aC8F02D304", "addressTo": "0x5B38Da6a701c568545dCfcB03FcB875f56beddC4", "amount": 10000 }` (The sender should have sufficient allowance of addressFrom, even if the sender is the same as addressFrom).
+    - GET `/api/erc20/:contractAddress` - Returns info about the smart contract.
+
 
 ## Migrations:
   There are 2 steps for migrations:
