@@ -17,11 +17,11 @@ const CONFIG = {
     },
 
     erc20FactoryContract: {
-        address: "0x5cb1e30BCc00170737bDf5f879FA3551d76953D3",
+        address: "0x2858b55A297173C0C25Dbbf888F56E59974C1278",
     },
 
     erc20TokenContract: {
-        address: "0x03fA11Ec0f967eD7eC5e1cd04983f320f7479a5b",
+        address: "0x5D6D7e7dA153509606d08C3E20Dc84DEE7b1c0E1",
     },
 
     datavaultContract: {

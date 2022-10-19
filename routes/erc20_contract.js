@@ -3,6 +3,7 @@ const Web3 = require('web3');
 const CONFIG = require("../config");
 const abi = require('../artifacts/contracts/ERC20Token.sol/ERC20Token.json').abi
 const {body, param, validationResult} = require('express-validator');
+const { utils } = require('ethers')
 
 const tokenVerification = require('./../middleware/tokenVerification');
 
@@ -22,9 +23,7 @@ router.post('/mint/',
         const contract = new web3.eth.Contract(abi);
 
         const to = req.body.to;
-        const amount = req.body.amount;
-
-        const mintTx = contract.methods.mint(to, amount);
+        const mintTx = contract.methods.mint(to, utils.parseEther(req.body.amount));
 
         return res.send({
             data: mintTx.encodeABI(),
