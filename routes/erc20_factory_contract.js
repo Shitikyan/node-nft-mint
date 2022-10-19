@@ -2,8 +2,8 @@ const express = require("express");
 const Web3 = require('web3');
 const CONFIG = require("../config");
 const abi = require('../artifacts/contracts/ERC20TokenFactory.sol/ERC20TokenFactory.json').abi
-const {body, validationResult} = require('express-validator');
-
+const { body, validationResult } = require('express-validator');
+const { utils } = require('ethers');
 const tokenVerification = require('./../middleware/tokenVerification');
 
 const router = express.Router();
@@ -27,7 +27,7 @@ router.post('/',
             const CONTRACT_NAME = req.body.name;
             const CONTRACT_SYMBOL = req.body.symbol;
             const CONTRACT_DECIMALS = req.body.decimals;
-            const CONTRACT_MAX_SUPPLY = req.body.max_supply;
+            const CONTRACT_MAX_SUPPLY = utils.parseEther(req.body.max_supply);
 
             const token = req.authToken.token;
 
