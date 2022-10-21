@@ -12,7 +12,7 @@ const router = express.Router();
 router.post('/mint/',
     tokenVerification,
     body('to').isString(),
-    body('amount').isInt({min: 1}),
+    body('amount').isFloat({min: 0}),
     async (req, res, next) => {
     try {
         const errors = validationResult(req);
@@ -36,7 +36,7 @@ router.post('/mint/',
 
 router.post('/transfer-from/',
     tokenVerification,
-    body('amount').isInt({ min: 1}),
+    body('amount').isFloat({ min: 0}),
     body('addressFrom').isString(),
     body('addressTo').isString(),
     async (req, res, next) => {
