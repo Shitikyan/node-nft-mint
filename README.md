@@ -56,10 +56,20 @@ The endpoints are structures like this:
   ```
   {
     "to": "0xc315240Ac71b351BB1f2E2E60017D3aC8F02D304",
-    "amount": 1000
-    }
+    "amount": 1000,
+    "contract_address": "0x17e9584AD0e93e6ca7c109a6F84D914C85b92b3C"
+  }
   ```
-    - POST `/api/erc20/contract/transfer-from` - Returns encoded data of transferFrom method of the NFT contract. The request body looks like this: `{ "addressFrom": "0xc315240Ac71b351BB1f2E2E60017D3aC8F02D304", "addressTo": "0x5B38Da6a701c568545dCfcB03FcB875f56beddC4", "amount": 10000 }` (The sender should have sufficient allowance of addressFrom, even if the sender is the same as addressFrom).
+    - POST `/api/erc20/contract/transfer-from` - Returns encoded data of transferFrom method of the NFT contract. The request body looks like this (the sender should have sufficient allowance of addressFrom, even if the sender is the same as addressFrom):
+    ```
+    { 
+      "addressFrom": "0xc315240Ac71b351BB1f2E2E60017D3aC8F02D304", 
+      "addressTo": "0x5B38Da6a701c568545dCfcB03FcB875f56beddC4", 
+      "amount": 10000,
+      "contract_address": "0x17e9584AD0e93e6ca7c109a6F84D914C85b92b3C"
+    }
+    ``` 
+    
     - GET `/api/erc20/:contractAddress` - Returns info about the smart contract.
 
 
