@@ -3,7 +3,7 @@ const Web3 = require('web3');
 const CONFIG = require("../config");
 const abi = require('../artifacts/contracts/ERC20Token.sol/ERC20Token.json').abi
 const {body, param, validationResult} = require('express-validator');
-const { utils } = require('ethers')
+const { BigNumber } = require('bignumber.js');
 
 const tokenVerification = require('./../middleware/tokenVerification');
 
@@ -13,6 +13,7 @@ router.post('/mint/',
     tokenVerification,
     body('to').isString(),
     body('amount').isFloat({min: 0}),
+    body('contract_address').isString(),
     async (req, res, next) => {
     try {
         const errors = validationResult(req);
@@ -20,10 +21,16 @@ router.post('/mint/',
             return res.status(400).json({error: true, message: `${errors.array()[0].msg}. Param: ${errors.array()[0].param}`});
         }
         const web3 = new Web3(CONFIG.web3.provider);
-        const contract = new web3.eth.Contract(abi);
+        const contract = new web3.eth.Contract(abi, req.body.contract_address);
+
+        const decimals = await contract.methods.decimals().call();
+        const TEN_TO_DEC = new BigNumber(10).pow(decimals);
+        const amount = TEN_TO_DEC.multipliedBy(req.body.amount);
+        if(amount < 1) throw {message: "Invalid amount"};
 
         const to = req.body.to;
-        const mintTx = contract.methods.mint(to, utils.parseEther(req.body.amount));
+
+        const mintTx = contract.methods.mint(to, amount);
 
         return res.send({
             data: mintTx.encodeABI(),
@@ -39,6 +46,7 @@ router.post('/transfer-from/',
     body('amount').isFloat({ min: 0}),
     body('addressFrom').isString(),
     body('addressTo').isString(),
+    body('contract_address').isString(),
     async (req, res, next) => {
     try {
         const errors = validationResult(req);
@@ -47,10 +55,15 @@ router.post('/transfer-from/',
         }
         const addressTo = req.body.addressTo;
         const addressFrom = req.body.addressFrom;
-        const amount = req.body.amount;
 
         const web3 = new Web3(CONFIG.web3.provider);
-        const contract = new web3.eth.Contract(abi);
+        const contract = new web3.eth.Contract(abi, req.body.contract_address);
+
+        const decimals = await contract.methods.decimals().call();
+        const TEN_TO_DEC = new BigNumber(10).pow(decimals);
+        const amount = TEN_TO_DEC.multipliedBy(req.body.amount);
+
+        if(amount < 1) throw {message: "Invalid amount"};
 
         const transferTx = contract.methods.transferFrom(addressFrom, addressTo, amount);
 
