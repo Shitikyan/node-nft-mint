@@ -41,10 +41,9 @@ router.post('/mint/',
     }
 });
 
-router.post('/transfer-from/',
+router.post('/transfer/',
     tokenVerification,
     body('amount').isFloat({ min: 0}),
-    body('addressFrom').isString(),
     body('addressTo').isString(),
     body('contract_address').isString(),
     async (req, res, next) => {
@@ -54,7 +53,6 @@ router.post('/transfer-from/',
             return res.status(400).json({error: true, message: `${errors.array()[0].msg}. Param: ${errors.array()[0].param}`});
         }
         const addressTo = req.body.addressTo;
-        const addressFrom = req.body.addressFrom;
 
         const web3 = new Web3(CONFIG.web3.provider);
         const contract = new web3.eth.Contract(abi, req.body.contract_address);
@@ -65,7 +63,7 @@ router.post('/transfer-from/',
 
         if(amount < 1) throw {message: "Invalid amount"};
 
-        const transferTx = contract.methods.transferFrom(addressFrom, addressTo, amount);
+        const transferTx = contract.methods.transfer(addressTo, amount);
 
         return res.send({
             data: transferTx.encodeABI(),
@@ -75,6 +73,75 @@ router.post('/transfer-from/',
         res.send({ error: true, message: err.message });
     }
 });
+
+router.post('/transfer-from/',
+    tokenVerification,
+    body('amount').isFloat({ min: 0}),
+    body('addressFrom').isString(),
+    body('addressTo').isString(),
+    body('contract_address').isString(),
+    async (req, res, next) => {
+        try {
+            const errors = validationResult(req);
+            if (!errors.isEmpty()) {
+                return res.status(400).json({error: true, message: `${errors.array()[0].msg}. Param: ${errors.array()[0].param}`});
+            }
+            const addressTo = req.body.addressTo;
+            const addressFrom = req.body.addressFrom;
+
+            const web3 = new Web3(CONFIG.web3.provider);
+            const contract = new web3.eth.Contract(abi, req.body.contract_address);
+
+            const decimals = await contract.methods.decimals().call();
+            const TEN_TO_DEC = new BigNumber(10).pow(decimals);
+            const amount = TEN_TO_DEC.multipliedBy(req.body.amount);
+
+            if(amount < 1) throw {message: "Invalid amount"};
+
+            const transferTx = contract.methods.transferFrom(addressFrom, addressTo, amount);
+
+            return res.send({
+                data: transferTx.encodeABI(),
+            });
+        } catch (err) {
+            res.status(400);
+            res.send({ error: true, message: err.message });
+        }
+    });
+
+
+router.post('/approve/',
+    tokenVerification,
+    body('amount').isFloat({ min: 0}),
+    body('spender').isString(),
+    body('contract_address').isString(),
+    async (req, res, next) => {
+        try {
+            const errors = validationResult(req);
+            if (!errors.isEmpty()) {
+                return res.status(400).json({error: true, message: `${errors.array()[0].msg}. Param: ${errors.array()[0].param}`});
+            }
+            const spender = req.body.spender;
+
+            const web3 = new Web3(CONFIG.web3.provider);
+            const contract = new web3.eth.Contract(abi, req.body.contract_address);
+
+            const decimals = await contract.methods.decimals().call();
+            const TEN_TO_DEC = new BigNumber(10).pow(decimals);
+            const amount = TEN_TO_DEC.multipliedBy(req.body.amount);
+
+            if(amount < 1) throw {message: "Invalid amount"};
+
+            const transferTx = contract.methods.approve(spender, amount.toString());
+
+            return res.send({
+                data: transferTx.encodeABI(),
+            });
+        } catch (err) {
+            res.status(400);
+            res.send({ error: true, message: err.message });
+        }
+    });
 
 router.get('/:contractAddress',
     tokenVerification,
