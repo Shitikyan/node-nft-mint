@@ -87,6 +87,13 @@ The endpoints are structures like this:
       ``` 
     
       - GET `/api/erc20/:contractAddress` - Returns info about the smart contract.
+- `/api/datavault/`
+    - POST `/api/datavault/` - Set key. The request body looks like this
+      `{ "key": "test", "value": "testval" }`.
+    - GET `/api/datavault` - Get the key. The request body looks like this
+      `{ "key": "test", "value": "testval" }`.
+    - DELETE `/api/datavault/` - Delete key. The request body looks like this
+      `{ "key": "test" }`.
 
 
 ## Migrations:
